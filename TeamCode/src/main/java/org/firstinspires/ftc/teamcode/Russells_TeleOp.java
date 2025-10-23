@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "Russells TeleOp", group = "robot")
 public class Russells_TeleOp extends LinearOpMode {
-    private void boloneysandwhich() {
+    private void boloneysandwhichs() {
         boolean hi;
     }
 
