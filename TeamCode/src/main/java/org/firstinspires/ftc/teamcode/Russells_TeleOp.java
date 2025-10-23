@@ -1,12 +1,9 @@
-//TODO: This is my note.
 package org.firstinspires.ftc.teamcode;
-
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-@TeleOp(name = "Main TeleOp", group = "robot")
-public class TeleOp_Test extends LinearOpMode {
+@TeleOp(name = "Russells TeleOp", group = "robot")
+public class Russells_TeleOp {public class TeleOp_Test extends LinearOpMode {
     private void reallyNiceCode() {
         boolean hi;
     }
@@ -21,4 +18,5 @@ public class TeleOp_Test extends LinearOpMode {
 
         }
     }
+}
 }
