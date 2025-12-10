@@ -1,0 +1,33 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.mechanisms.TestBench;
+
+@TeleOp
+public class DistanceTest extends OpMode {
+
+    TestBench bench = new TestBench();
+    double distance = bench.getDistance();
+
+    @Override
+    public void init() {
+        bench.init(hardwareMap);
+    }
+
+    @Override
+    public void loop() {
+        if(distance < 10){
+            telemetry.addData("Distance","Too close!");
+        }
+        else{
+            telemetry.addData("Distance", distance);
+        }
+    }
+}
+
+/*
+1. print "Too close!" if your object is closer than 10cm away.
+ */
