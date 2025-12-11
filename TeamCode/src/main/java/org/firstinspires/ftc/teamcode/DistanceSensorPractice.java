@@ -5,13 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.TestBench;
-import org.openftc.easyopencv.OpenCvCameraBase;
 @Disabled
 @TeleOp
-public class ColorSensorExample extends OpMode {
+public class DistanceSensorPractice extends OpMode {
 
     TestBench bench = new TestBench();
-    TestBench.DetectedColor detectedColor;
+    double distance = bench.getDistance();
 
     @Override
     public void init() {
@@ -20,7 +19,15 @@ public class ColorSensorExample extends OpMode {
 
     @Override
     public void loop() {
-        detectedColor = bench.getDetectedColor(telemetry);
-        telemetry.addData("Detected Color",detectedColor);
+        if(distance < 10){
+            telemetry.addData("Distance","Too close!");
+        }
+        else{
+            telemetry.addData("Distance", distance);
+        }
     }
 }
+
+/*
+1. print "Too close!" if your object is closer than 10cm away.
+ */

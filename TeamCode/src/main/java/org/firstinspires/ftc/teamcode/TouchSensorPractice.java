@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.mechanisms.TestBench;
+
 @Disabled
 @TeleOp
-public class DistanceTest extends OpMode {
-
+public class TouchSensorPractice extends OpMode {
     TestBench bench = new TestBench();
-    double distance = bench.getDistance();
 
     @Override
     public void init() {
@@ -20,15 +18,19 @@ public class DistanceTest extends OpMode {
 
     @Override
     public void loop() {
-        if(distance < 10){
-            telemetry.addData("Distance","Too close!");
+        if(bench.isTouchSensorPressed()){
+            telemetry.addData("touch sensor state","pressed");
         }
         else{
-            telemetry.addData("Distance", distance);
+            telemetry.addData("touch sensor state","not pressed");
         }
+
     }
 }
 
 /*
-1. print "Too close!" if your object is closer than 10cm away.
+   1. create a new getter method in testBench class called "isTouchSensorReleased"
+   should return true if the touch sensor is NOT being pressed.
+   2. in your telemetry opMode, have telemetry state "pressed" or "not pressed"
+   instead of true and false.
  */
