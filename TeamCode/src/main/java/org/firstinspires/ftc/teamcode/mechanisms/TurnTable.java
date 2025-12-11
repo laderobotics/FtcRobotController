@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class TurnTable {
 
-    private CRServo turnServo;
-    private TouchSensor magSensor;
+    private CRServo turnServo; //This is the servo that turns the turntable
+    private TouchSensor magSensor; //This is the sensor that tells the table when to stop turning
 
     public void init(HardwareMap hwMap) {
-        turnServo = hwMap.get(CRServo.class, "turn_table_servo");
-        magSensor = hwMap.get(TouchSensor.class, "turn_table_mag_sensor");
+        //turn servo initialization
+        turnServo = hwMap.get(CRServo.class, "turn_table_servo"); // Control Hub servo 1
+        magSensor = hwMap.get(TouchSensor.class, "turn_table_mag_sensor"); // Control Hub digital 1?
     }
 
     public void setTurnServoPower(double power){
