@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Launcher {
 
     private DcMotor flywheelMotor; //This is the motor that spins up and launches the artifact ball.
-    private Servo liftToLaunchServo; //This is the servo with the silver claw that lifts the ball
+    private Servo ballLifterServo; //This is the servo with the silver claw that lifts the ball
                                     // from the turntable into the flywheel launcher
+
+
 
     public void init(HardwareMap hwMap){
         //flywheel motor initialization
@@ -19,9 +21,9 @@ public class Launcher {
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not power
 
         //lift to launch servo initialization
-        liftToLaunchServo = hwMap.get(Servo.class,"lift_to_launch_servo"); //Control hub servo 2
-        liftToLaunchServo.setDirection(Servo.Direction.FORWARD); //Switch to reverse if turning wrong way
-        liftToLaunchServo.scaleRange(0.0, 1.0); //Replace with min position and max position
+        ballLifterServo = hwMap.get(Servo.class,"ball_lifter_servo"); //Control hub servo 2
+        ballLifterServo.setDirection(Servo.Direction.FORWARD); //Switch to reverse if turning wrong way
+        ballLifterServo.scaleRange(0.0, 1.0); //Replace with min position and max position
     }
 
     //Flywheel methods
@@ -34,9 +36,9 @@ public class Launcher {
 
     //Lift to launch servo methods
     public void setLiftToLaunchServoPosition(double angle) { //setter
-        liftToLaunchServo.setPosition(angle);
+        ballLifterServo.setPosition(angle);
     }
     public double getLiftToLaunchServoPosition() { //getter
-        return liftToLaunchServo.getPosition();
+        return ballLifterServo.getPosition();
     }
 }
