@@ -29,7 +29,7 @@ public class Leonard_TeloOp extends LinearOpMode {
         turningtableservo = hardwareMap.get(CRServo.class, "turningtableservo");
         if (gamepad1.left_bumper) { // Example: Press 'A' button to turn clockwise
             turningtableservo.setPower(-1.0); // Adjust speed as needed
-        } else if (gamepad1.right_bumper) { // Example: Press 'B' button to turn counter-clockwise
+        } else if (gamepad1.right_bumper) { // =Example: Press 'B' button to turn counter-clockwise
             turningtableservo.setPower(1.0); // Adjust speed as needed
         } else {
             turningtableservo.setPower(0.0); // Stop when no button is pressed
