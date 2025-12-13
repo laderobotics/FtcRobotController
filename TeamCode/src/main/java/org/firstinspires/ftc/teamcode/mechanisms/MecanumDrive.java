@@ -37,14 +37,14 @@ public class MecanumDrive {
     }
 
     // Drives according to robot orientation (forward on stick = forward from robot perspective)
-    public void drive(double forward, double strafe, double rotate){ // Drives according to robot orientation (forward on stick = forward from robot perspective)
+    public void drive(double forward, double strafe, double rotate,double maxSpeed){ // Drives according to robot orientation (forward on stick = forward from robot perspective)
         double frontLeftPower = forward + strafe + rotate;
         double backLeftPower = forward - strafe + rotate;
         double frontRightPower = forward - strafe - rotate;
         double backRightPower = forward + strafe - rotate;
 
         double maxPower = 1.0;
-        double maxSpeed = 1.0;
+
 
         maxPower = Math.max(maxPower,Math.abs(frontLeftPower));
         maxPower = Math.max(maxPower,Math.abs(backLeftPower));
@@ -58,7 +58,7 @@ public class MecanumDrive {
     }
 
     //Drives according to field orientation (forward on stick = forward from driver orientation)
-    public void driveFieldRelative(double forward, double strafe, double rotate){
+    public void driveFieldRelative(double forward, double strafe, double rotate,double maxSpeed){
         double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
 
@@ -68,6 +68,6 @@ public class MecanumDrive {
         double newForward = r * Math.sin(theta);
         double newStrafe = r * Math.cos(theta);
 
-        this.drive(newForward, newStrafe, rotate);
+        this.drive(newForward, newStrafe, rotate,maxSpeed);
     }
 }

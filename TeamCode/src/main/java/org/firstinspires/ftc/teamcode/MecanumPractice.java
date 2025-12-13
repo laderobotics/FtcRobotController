@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 public class MecanumPractice extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();
-    double forward, strafe, rotate;
+    double forward, strafe, rotate,slowTrigger;
 
     @Override
     public void init() {
