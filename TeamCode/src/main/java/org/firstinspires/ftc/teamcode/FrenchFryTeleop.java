@@ -17,15 +17,17 @@ public class FrenchFryTeleop extends OpMode {
     TurnTable turnTable = new TurnTable();
     Launcher launcher=new Launcher();
     MecanumDrive drive= new MecanumDrive();
-    boolean magFlag =false;
+    boolean magSensed =false;
     double cannonSpeedMultiplier=0.8;
-    double launchPosition = 0.1;
+    double launchPosition = 0.0;
 
-
-    double safePosition=0.0;
+    double safePosition=0.33;
     boolean safeToTurn = false;
     double horizontal, vertical, rotate;
-    double slowTrigger;
+    double slowTrigger=0;
+
+    boolean atSpeed = false;
+    boolean isSpinningUp = false;
 
 
     @Override
@@ -34,6 +36,7 @@ public class FrenchFryTeleop extends OpMode {
         turnTable.init(hardwareMap);
         launcher.init(hardwareMap);
         drive.init(hardwareMap);
+        launcher.setLiftToLaunchServoPosition(safePosition);
 
     }
 
@@ -55,71 +58,48 @@ public class FrenchFryTeleop extends OpMode {
             intake.setRollerServoPower(0.0);
 
         }
-        if (turnTable.isMagnetPresent()&&!magFlag) {
-            magFlag = true;
-        }
-        if (!turnTable.isMagnetPresent()){
-            magFlag=false;
-        }
 
+        telemetry.addData("Mag Sensor",turnTable.isMagnetPresent());
 
-
-
-        if (gamepad2.left_bumper){
-            if (turnTable.isMagnetPresent()){
-                if (magFlag&&safeToTurn){
-                    turnTable.setTurnServoPower(1.0);
+        if (gamepad2.left_bumper) {
+           turnTable.setTurnServoPower(1.0);//You shall pass!
                 }
-                else {
-                    turnTable.setTurnServoPower(0.0);
-                }
+        else if (gamepad2.right_bumper) {
+            if (turnTable.isMagnetPresent()) {
+                turnTable.setTurnServoPower(0.0);
             }
             else {
-                if (safeToTurn){
-                turnTable.setTurnServoPower(1.0);
-            }
-
-        }
-            if (gamepad2.right_bumper) {
-                if (turnTable.isMagnetPresent()) {
-                    if (magFlag && safeToTurn) {
-                        turnTable.setTurnServoPower(-1.0);
-                    } else {
-                        turnTable.setTurnServoPower(0.0);
-                    }
-                } else {
-                    if (safeToTurn) {
-                        turnTable.setTurnServoPower(-1.0);
-                    }
-
+                turnTable.setTurnServoPower(-1.0);
                 }
             }
-        else{
+        else {
             turnTable.setTurnServoPower(0.0);
-
-
-
         }
 
-        launcher.setFlywheelMotorSpeed(0.2+cannonSpeedMultiplier*gamepad1.right_trigger);
+        telemetry.addData("right trigger",gamepad2.right_trigger);
+        telemetry.addData("power",launcher.getMotorPower());
+        telemetry.addData("velocity", launcher.getCurrentVelocity());
 
 
+        launcher.setFlywheelMotorSpeed(0.2+(cannonSpeedMultiplier*gamepad2.right_trigger));
         if (gamepad2.dpad_up){
             launcher.setLiftToLaunchServoPosition(launchPosition);
             safeToTurn=false;
-
-
         }
         else{
             launcher.setLiftToLaunchServoPosition(safePosition);
             safeToTurn=true;
-
         }
+
+
         horizontal= gamepad1.left_stick_x;
-        vertical= gamepad1.left_stick_y;
+        vertical= -gamepad1.left_stick_y;
         rotate= gamepad1.right_stick_x;
         slowTrigger= gamepad1.right_trigger;
-        drive.driveFieldRelative(horizontal,vertical,rotate,slowTrigger);
-    }
+        drive.drive(vertical,horizontal,rotate,slowTrigger);
+
+        if(gamepad1.y){
+            drive.resetYaw();
+        }
     }
 }

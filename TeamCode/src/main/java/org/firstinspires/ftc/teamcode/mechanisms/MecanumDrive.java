@@ -22,7 +22,8 @@ public class MecanumDrive {
         backRightMotor = hwMap.get(DcMotor.class,"back_right_motor"); //Expansion hub motor 3
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE); // reverse direction to correct this motor
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE); // reverse direction to correct this motor
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD); // reverse direction to correct this motor
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not just power
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not just power
@@ -31,8 +32,8 @@ public class MecanumDrive {
 
         imu = hwMap.get(IMU.class,"imu"); // Built into the control hub, don't change its name
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot( // change to match how the control hub is mounted
-                RevHubOrientationOnRobot.LogoFacingDirection.UP, //Which way is the "Control Hub" logo facing?
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD); //Which way are the USB ports facing?
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD, //Which way is the "Control Hub" logo facing?
+                RevHubOrientationOnRobot.UsbFacingDirection.UP); //Which way are the USB ports facing?
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
 
@@ -44,6 +45,7 @@ public class MecanumDrive {
         double backRightPower = forward + strafe - rotate;
 
         double maxPower = 1.0;
+        double mult = 1.0 - 0.75 * maxSpeed;
 
 
         maxPower = Math.max(maxPower,Math.abs(frontLeftPower));
@@ -51,10 +53,10 @@ public class MecanumDrive {
         maxPower = Math.max(maxPower,Math.abs(frontRightPower));
         maxPower = Math.max(maxPower,Math.abs(backRightPower));
 
-        frontLeftMotor.setPower(maxSpeed * frontLeftPower/maxPower);
-        backLeftMotor.setPower(maxSpeed * backLeftPower/maxPower);
-        frontRightMotor.setPower(maxSpeed * frontRightPower/maxPower);
-        backRightMotor.setPower(maxSpeed * backRightPower/maxPower);
+        frontLeftMotor.setPower(mult * frontLeftPower/maxPower);
+        backLeftMotor.setPower(mult * backLeftPower/maxPower);
+        frontRightMotor.setPower(mult * frontRightPower/maxPower);
+        backRightMotor.setPower(mult * backRightPower/maxPower);
     }
 
     //Drives according to field orientation (forward on stick = forward from driver orientation)
@@ -69,5 +71,9 @@ public class MecanumDrive {
         double newStrafe = r * Math.cos(theta);
 
         this.drive(newForward, newStrafe, rotate,maxSpeed);
+    }
+
+    public void resetYaw(){
+        imu.resetYaw();
     }
 }

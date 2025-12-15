@@ -19,7 +19,7 @@ public class Intake {
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); //Switch to reverse if spinning wrong way
         //roller servo initialization
         rollerServo = hwMap.get(CRServo.class,"roller_servo"); //Control Hub servo 0
-        rollerServo.setDirection(DcMotorSimple.Direction.FORWARD); //Switch to reverse if spinning wrong way
+        rollerServo.setDirection(DcMotorSimple.Direction.REVERSE); //Switch to reverse if spinning wrong way
     }
 
     //intake motor methods
