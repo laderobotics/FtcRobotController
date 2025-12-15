@@ -2,17 +2,38 @@ package org.firstinspires.ftc.teamcode.tutorials;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @TeleOp
 public class FlywheelTunerTutorial extends OpMode {
+    public DcMotorEx flywheelMotor;
+
+    public double highVelocity = 1500;
+    public double lowVelocity = 900;
+
+    double curTargetVelocity = highVelocity;//how the speed changes when you click another button
+    double F = 0;// F means Feed forward
+    double P = 0;//P means proportional
+
+    double[] stepSizes = {10.0, 1.0, 0.1, 0.0001};//diffrent levels of sensitivity
+    int stopIndex = 1;
 
     @Override
     public void init() {
-
+    flywheelMotor = hardwareMap.get(DcMotorEx.class,"motor");
+    flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+    flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+    telemetry.addLine("init complete");
     }
 
     @Override
     public void loop() {
-
+       //get all our gamepad commands
     }
 }

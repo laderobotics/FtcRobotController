@@ -26,7 +26,5 @@ public class Lift {
         return liftMotor.getPower();
     }
 
-    public RevTouchSensor getLiftSensorBottom() {
-        return liftSensorBottom;boolean
-    }
+    public RevTouchSensor getLiftSensorBottom() {return liftSensorBottom;boolean    }
 }
