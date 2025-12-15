@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 public class MecanumPractice extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();
-    double forward, strafe, rotate;
+    double forward, strafe, rotate,slowTrigger;
 
     @Override
     public void init() {
@@ -25,6 +25,6 @@ public class MecanumPractice extends OpMode {
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
-        drive.driveFieldRelative(forward, strafe, rotate);
+        //drive.driveFieldRelative(forward, strafe, rotate);
     }
 }
