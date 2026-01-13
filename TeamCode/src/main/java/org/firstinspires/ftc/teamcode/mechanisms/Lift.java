@@ -12,13 +12,14 @@ public class Lift {
     public void init(HardwareMap hwMap){
         liftMotor = hwMap.get(DcMotor.class,"lift_motor");
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftSensorBottom = hwMap.get(RevTouchSensor.class,"lift_sensor_bottom");
         liftSensorTop = hwMap.get(RevTouchSensor.class,"lift_sensor_top");
     }
 
     public void setLiftMotorPower(double power){
+        //positive values move the robot up, negative move it down.
         liftMotor.setPower(power);
     }
 
@@ -26,5 +27,7 @@ public class Lift {
         return liftMotor.getPower();
     }
 
-    public RevTouchSensor getLiftSensorBottom() {return liftSensorBottom;boolean    }
+    public boolean getLiftSensorBottom() {return liftSensorBottom.isPressed() ;}
+
+    public boolean getLiftSensorTop() {return liftSensorTop.isPressed() ;}
 }

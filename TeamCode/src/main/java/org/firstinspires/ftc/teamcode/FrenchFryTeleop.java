@@ -18,9 +18,9 @@ public class FrenchFryTeleop extends OpMode {
     Launcher launcher=new Launcher();
     MecanumDrive drive= new MecanumDrive();
     boolean magSensed =false;
+    double turnDirection = 1.0;
     double cannonSpeedMultiplier=0.8;
     double launchPosition = 0.0;
-
     double safePosition=0.33;
     boolean safeToTurn = false;
     double horizontal, vertical, rotate;
@@ -61,6 +61,28 @@ public class FrenchFryTeleop extends OpMode {
 
         telemetry.addData("Mag Sensor",turnTable.isMagnetPresent());
 
+        if(turnTable.isMagnetPresent()){
+            if(gamepad2.rightBumperWasPressed()&&safeToTurn){
+                turnTable.setTurnServoPower(1.0);
+                turnDirection = 1.0;
+            }
+            else if (gamepad2.leftBumperWasPressed()&&safeToTurn) {
+                turnTable.setTurnServoPower(-1.0);
+                turnDirection = -1.0;
+            }
+            else if (gamepad2.rightBumperWasReleased()) {
+                turnTable.setTurnServoPower(0.0);
+                turnDirection *= -1;
+            }
+            else if (gamepad2.leftBumperWasReleased()) {
+                turnTable.setTurnServoPower(0.0);
+                turnDirection *= -1;
+            }
+        }
+        else{
+            turnTable.setTurnServoPower(turnDirection);
+        }
+        /* Competition 1 turntable code
         if (gamepad2.left_bumper) {
            turnTable.setTurnServoPower(1.0);//You shall pass!
                 }
@@ -74,7 +96,7 @@ public class FrenchFryTeleop extends OpMode {
             }
         else {
             turnTable.setTurnServoPower(0.0);
-        }
+        } */
 
         telemetry.addData("right trigger",gamepad2.right_trigger);
         telemetry.addData("power",launcher.getMotorPower());
