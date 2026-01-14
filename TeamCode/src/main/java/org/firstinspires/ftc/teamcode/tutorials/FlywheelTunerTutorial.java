@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class FlywheelTunerTutorial extends OpMode {
     public DcMotorEx flywheelMotor;
 
-    public double highVelocity = 1500;
-    public double lowVelocity = 900;
+    public double highVelocity = 1680;
+    public double lowVelocity = 1300;
 
     double curTargetVelocity = highVelocity;//how the speed changes when you click another button
     double F = 0;// F means Feed forward
     double P = 0;//P means proportional
 
-    double[] stepSizes = {10.0, 1.0, 0.1, 0.0001};//different levels of sensitivity
+    double[] stepSizes = {10.0, 1.0, 0.1, 0.01, 0.001};//different levels of sensitivity
     int stepIndex = 1;
 
     @Override
@@ -39,7 +39,10 @@ public class FlywheelTunerTutorial extends OpMode {
         if (gamepad1.yWasPressed()) {
             if (curTargetVelocity == highVelocity) {
                 curTargetVelocity = lowVelocity;
-            }else {curTargetVelocity = highVelocity; }
+            }
+            else {
+                curTargetVelocity = highVelocity;
+            }
         }
 
         if (gamepad1.bWasPressed()) {
@@ -56,7 +59,7 @@ public class FlywheelTunerTutorial extends OpMode {
         if (gamepad1. dpadUpWasPressed()) {
             P += stepSizes[stepIndex];
         }
-        if (gamepad1.dpadUpWasPressed()) {
+        if (gamepad1.dpadDownWasPressed()) {
             P -= stepSizes[stepIndex];
         }
         //set new PIDF coefeicients

@@ -5,14 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
+import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
 
-//TODO Find launch speed for close shots and for far shots.
 //TODO Calibrate F and P values to switch between speeds and return to speed optimally.
 //TODO Use PIDF coefficients in this opMode like in the Flywheel tuner opMode.
-
-//TODO Add lift code from Leonard's test opMode to this opMode
 
 @TeleOp
 public class FrenchFryTeleop extends OpMode {
@@ -21,6 +19,7 @@ public class FrenchFryTeleop extends OpMode {
     TurnTable turnTable = new TurnTable();
     Launcher launcher=new Launcher();
     MecanumDrive drive= new MecanumDrive();
+    Lift lift=new Lift();
     boolean turntableManual = false; //false = auto turn to magnet with bumpers,
                                    // true = manual control with triggers
     boolean cwButton, ccwButton; //buttons for turning the turn table automatically
@@ -33,7 +32,6 @@ public class FrenchFryTeleop extends OpMode {
     double horizontal, vertical, rotate;
     double slowTrigger=0;
     boolean driveFieldRelative = true; //start in Field Relative Driving mode
-    boolean lastX = false;
 
     boolean atSpeed = false;
     boolean isSpinningUp = false;
@@ -46,6 +44,7 @@ public class FrenchFryTeleop extends OpMode {
         launcher.init(hardwareMap);
         drive.init(hardwareMap);
         launcher.setLiftToLaunchServoPosition(safePosition);
+        lift.init(hardwareMap);
 
     }
 
@@ -80,13 +79,21 @@ public class FrenchFryTeleop extends OpMode {
         else if(cwPower>0.1 || ccwPower>0.1){
             turntableManual = true;
         }
-
+        launcher.setFlywheelMotorSpeed(0.2+(cannonSpeedMultiplier*gamepad2.right_trigger));
+        if (gamepad2.dpad_up){
+            launcher.setLiftToLaunchServoPosition(launchPosition);
+            safeToTurn=false;
+        }
+        else{
+            launcher.setLiftToLaunchServoPosition(safePosition);
+            safeToTurn=true;
+        }
         //New Turntable code to test
         if(turntableManual){ //Use the triggers to spin the turntable manually, ignoring the mag sensor
-            turnTable.setTurnServoPower(cwPower - ccwPower);
+            turnTable.setTurnServoPower(0.5*(cwPower - ccwPower));
         }
-        else{ //Use the bumpers to turn the turntable to the next magnet, should also self correct
-            turnTable.updateTurnTable(cwButton,ccwButton);
+        else{ //Use the bumpers to turn the turntable to the next magnet, self corrects to the left
+            turnTable.updateTurnTable(safeToTurn&&cwButton,safeToTurn&&ccwButton, telemetry);
         }
 
         /* Competition 1 Turntable code, test new code before deleting!
@@ -129,10 +136,9 @@ public class FrenchFryTeleop extends OpMode {
         rotate= gamepad1.right_stick_x;
         slowTrigger= gamepad1.right_trigger;
         //Toggle between Robot Relative and Field Relative driving by pressing X on gamepad1.
-        if(gamepad1.x && !lastX){
+        if(gamepad1.xWasPressed()){
             driveFieldRelative = !driveFieldRelative;
         }
-        lastX = gamepad1.x;
 
         if(driveFieldRelative){
             drive.driveFieldRelative(vertical,horizontal,rotate,slowTrigger);
@@ -143,6 +149,27 @@ public class FrenchFryTeleop extends OpMode {
         else{
             drive.drive(vertical,horizontal,rotate,slowTrigger);
         }
+
+        //Lift Stuff XD
+        if (gamepad1.dpad_up){
+            if(!lift.getLiftSensorTop()){
+                lift.setLiftMotorPower(1.0);
+            }
+            else {
+                lift.setLiftMotorPower(0.0);
+            }
+        }
+        else {
+            if (!lift.getLiftSensorBottom()){
+                lift.setLiftMotorPower(-1.0);
+            }
+            else {
+                lift.setLiftMotorPower(0.0);
+            }
+        }
+        telemetry.addData("Motor Power",lift.getLiftMotorPower());
+        telemetry.addData("Top Sensor",lift.getLiftSensorTop());
+        telemetry.addData("Bottom Sensor",lift.getLiftSensorBottom());
 
 
     }

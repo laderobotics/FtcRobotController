@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class TurnTable {
 
     private CRServo turnServo; //This is the servo that turns the turntable
@@ -12,11 +14,12 @@ public class TurnTable {
     private enum TurntableState {
         IDLE,
         MOVING_OFF_MAGNET,
-        SEARCHING_FOR_NEXT_MAGNET,
-        RETURNING_TO_MAGNET
+        SEARCHING_FOR_MAGNET
     }
 
     TurntableState state = TurntableState.IDLE;
+    int turnDirection;
+    double turnPower;
 
     public void init(HardwareMap hwMap) {
         //turn servo initialization
@@ -34,28 +37,29 @@ public class TurnTable {
 
     //With the help of ChatGPT I made a state machine for the turntable!  I adjusted it to use both bumpers
     // so we can turn the turntable either direction.  Needs testing!
-    public void updateTurnTable(boolean cwButton, boolean ccwButton){
+    public void updateTurnTable(boolean cwButton, boolean ccwButton, Telemetry telemetry){
         boolean magnetDetected = magSensor.isPressed();
-        int turnDirection = 1;
-        double turnPower = 1.0;
-
+        telemetry.addData("Turntable State",state);
         switch (state){
             case IDLE:
                 //Driver 2 command -> Go to next magnet
                 if(cwButton){
-                    turnServo.setPower(turnPower);
-                    state = TurntableState.MOVING_OFF_MAGNET;
+                    turnServo.setPower(0.5);
+                    turnPower = 0.5;
                     turnDirection = 1;
+                    state = TurntableState.MOVING_OFF_MAGNET;
                 }
                 else if(ccwButton){
-                    turnServo.setPower(-turnPower);
-                    state = TurntableState.MOVING_OFF_MAGNET;
+                    turnServo.setPower(-0.5);
+                    turnPower = 0.5;
                     turnDirection = -1;
+                    state = TurntableState.MOVING_OFF_MAGNET;
                 }
                 //Drift Detected, reverse
+                //(only corrects by pushing left, to correct for a launch pushing it out of position.)
                 else if(!magnetDetected){
-                    turnServo.setPower(-1*turnDirection*turnPower);
-                    state = TurntableState.RETURNING_TO_MAGNET;
+                    turnServo.setPower(-0.1);
+                    state = TurntableState.SEARCHING_FOR_MAGNET;
                 }
                 break;
 
@@ -63,20 +67,16 @@ public class TurnTable {
                 //Wait until we leave the current magnet
                 if(!magnetDetected){
                     turnServo.setPower(turnDirection*turnPower);
-                    state = TurntableState.SEARCHING_FOR_NEXT_MAGNET;
+                    state = TurntableState.SEARCHING_FOR_MAGNET;
                 }
                 break;
 
-            case SEARCHING_FOR_NEXT_MAGNET:
-                //Stop on next magnet
-                if(magnetDetected){
-                    turnServo.setPower(0);
-                    state = TurntableState.IDLE;
+            case SEARCHING_FOR_MAGNET:
+                //Stop on next magnet - slow as you approach
+                if(turnPower>0.15){
+                    turnServo.setPower(turnDirection*turnPower);
+                    turnPower -= 0.05; //adjust this number until turntable slows enough to catch next magnet
                 }
-                break;
-
-            case RETURNING_TO_MAGNET:
-                //Re-center on magnet
                 if(magnetDetected){
                     turnServo.setPower(0);
                     state = TurntableState.IDLE;
