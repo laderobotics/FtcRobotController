@@ -8,7 +8,11 @@ import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
 
+//TODO Find launch speed for close shots and for far shots.
+//TODO Calibrate F and P values to switch between speeds and return to speed optimally.
+//TODO Use PIDF coefficients in this opMode like in the Flywheel tuner opMode.
 
+//TODO Add lift code from Leonard's test opMode to this opMode
 
 @TeleOp
 public class FrenchFryTeleop extends OpMode {
@@ -17,14 +21,19 @@ public class FrenchFryTeleop extends OpMode {
     TurnTable turnTable = new TurnTable();
     Launcher launcher=new Launcher();
     MecanumDrive drive= new MecanumDrive();
-    boolean magSensed =false;
+    boolean turntableManual = false; //false = auto turn to magnet with bumpers,
+                                   // true = manual control with triggers
+    boolean cwButton, ccwButton; //buttons for turning the turn table automatically
+    double cwPower, ccwPower; //triggers for turning the turn table manually
+    boolean magPresent; //true when the magnet is present, aka, when turn table position is correct
     double cannonSpeedMultiplier=0.8;
     double launchPosition = 0.0;
-
     double safePosition=0.33;
     boolean safeToTurn = false;
     double horizontal, vertical, rotate;
     double slowTrigger=0;
+    boolean driveFieldRelative = true; //start in Field Relative Driving mode
+    boolean lastX = false;
 
     boolean atSpeed = false;
     boolean isSpinningUp = false;
@@ -59,8 +68,28 @@ public class FrenchFryTeleop extends OpMode {
 
         }
 
-        telemetry.addData("Mag Sensor",turnTable.isMagnetPresent());
+        cwButton = gamepad2.left_bumper;
+        ccwButton = gamepad2.right_bumper;
+        cwPower = gamepad2.left_trigger;
+        ccwPower = gamepad2.right_trigger;
+        magPresent = turnTable.isMagnetPresent();
 
+        if(cwButton || ccwButton){
+            turntableManual = false;
+        }
+        else if(cwPower>0.1 || ccwPower>0.1){
+            turntableManual = true;
+        }
+
+        //New Turntable code to test
+        if(turntableManual){ //Use the triggers to spin the turntable manually, ignoring the mag sensor
+            turnTable.setTurnServoPower(cwPower - ccwPower);
+        }
+        else{ //Use the bumpers to turn the turntable to the next magnet, should also self correct
+            turnTable.updateTurnTable(cwButton,ccwButton);
+        }
+
+        /* Competition 1 Turntable code, test new code before deleting!
         if (gamepad2.left_bumper) {
            turnTable.setTurnServoPower(1.0);//You shall pass!
                 }
@@ -74,7 +103,10 @@ public class FrenchFryTeleop extends OpMode {
             }
         else {
             turnTable.setTurnServoPower(0.0);
-        }
+        }*/
+
+        telemetry.addData("Mag Sensor",magPresent);
+
 
         telemetry.addData("right trigger",gamepad2.right_trigger);
         telemetry.addData("power",launcher.getMotorPower());
@@ -96,10 +128,22 @@ public class FrenchFryTeleop extends OpMode {
         vertical= -gamepad1.left_stick_y;
         rotate= gamepad1.right_stick_x;
         slowTrigger= gamepad1.right_trigger;
-        drive.drive(vertical,horizontal,rotate,slowTrigger);
-
-        if(gamepad1.y){
-            drive.resetYaw();
+        //Toggle between Robot Relative and Field Relative driving by pressing X on gamepad1.
+        if(gamepad1.x && !lastX){
+            driveFieldRelative = !driveFieldRelative;
         }
+        lastX = gamepad1.x;
+
+        if(driveFieldRelative){
+            drive.driveFieldRelative(vertical,horizontal,rotate,slowTrigger);
+            if(gamepad1.y){
+                drive.resetYaw();
+            }
+        }
+        else{
+            drive.drive(vertical,horizontal,rotate,slowTrigger);
+        }
+
+
     }
 }
