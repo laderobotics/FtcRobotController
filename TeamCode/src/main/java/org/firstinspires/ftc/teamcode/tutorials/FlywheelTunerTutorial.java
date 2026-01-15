@@ -25,7 +25,7 @@ public class FlywheelTunerTutorial extends OpMode {
     public void init() {
     flywheelMotor = hardwareMap.get(DcMotorEx.class,"flywheel_motor");
     flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
     flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     telemetry.addLine("init complete");
@@ -62,14 +62,14 @@ public class FlywheelTunerTutorial extends OpMode {
         if (gamepad1.dpadDownWasPressed()) {
             P -= stepSizes[stepIndex];
         }
-        //set new PIDF coefeicients
+        //set new PIDF coefficients
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         //set velocity
         flywheelMotor.setVelocity(curTargetVelocity);
 
-        double curVelocity = -flywheelMotor.getVelocity();
+        double curVelocity = flywheelMotor.getVelocity();
         double error = curTargetVelocity - curVelocity;
 
         telemetry.addData("target Velocity", curTargetVelocity);

@@ -23,11 +23,11 @@ public class FlywheelSpeedTuner extends OpMode {
     public void init() {
     flywheelMotor = hardwareMap.get(DcMotorEx.class,"flywheel_motor");
     flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0,0,0,14);
+    flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0,0,0,13.5);
     flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     launcher.init(hardwareMap);
-    launcher.setLiftToLaunchServoPosition(0.33);
+    launcher.setLauncherServoPosition(0.33);
     telemetry.addLine("init complete");
     }
 
@@ -37,10 +37,10 @@ public class FlywheelSpeedTuner extends OpMode {
         // get target velocity
         //update telemetry
         if (gamepad1.dpad_up) {
-            launcher.setLiftToLaunchServoPosition(0.0);
+            launcher.setLauncherServoPosition(0.0);
         }
         else{
-            launcher.setLiftToLaunchServoPosition(0.33);
+            launcher.setLauncherServoPosition(0.33);
         }
 
         if (gamepad1.dpadRightWasPressed()) {
@@ -57,7 +57,7 @@ public class FlywheelSpeedTuner extends OpMode {
         //set velocity
         flywheelMotor.setVelocity(velocity);
 
-        double curVelocity = -flywheelMotor.getVelocity();
+        double curVelocity = flywheelMotor.getVelocity();
         double error = velocity - curVelocity;
 
         telemetry.addData("target Velocity", velocity);

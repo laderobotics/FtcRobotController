@@ -4,7 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Launcher {
 
@@ -12,13 +15,24 @@ public class Launcher {
     private Servo ballLifterServo; //This is the servo with the silver claw that lifts the ball
                                     // from the turntable into the flywheel launcher
 
+    double startingSmallZoneSpeed = 1300;//Starting point for flywheel speed for big launch zone near goal
+    double smallZoneSpeed = startingSmallZoneSpeed;
+    double startingBigZoneSpeed = 1680; //Starting point for flywheel speed for small launch zone far from goal
+    double bigZoneSpeed = startingBigZoneSpeed;
+    double[] stepSizes = {100,10};
+    int stepIndex = 0;
+    boolean bigZone = true;
 
     public void init(HardwareMap hwMap){
         //flywheel motor initialization
         flywheelMotor = hwMap.get(DcMotorEx.class, "flywheel_motor"); //Control hub motor 2
+        flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not power
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //Keep spinning with momentum
-        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD); //Switch to reverse if spinning wrong way
-        //flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not power
+        flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE); //Switch to reverse if spinning wrong way
+        //TODO switch the power wires to this motor to see if that makes the getVelocity match setVelocity
+        //TODO if above fix works, dial in P and F coefficients and place them here
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0,0,0,13.5);
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         //lift to launch servo initialization
         ballLifterServo = hwMap.get(Servo.class,"ball_lifter_servo"); //Control hub servo 2
@@ -26,26 +40,73 @@ public class Launcher {
         ballLifterServo.scaleRange(0.0, 1.0); //Replace with min position and max position
     }
 
-    public double getCurrentVelocity() {
+    //Flywheel methods
+    public void setVelocity(double velocity){ //setter RUN_USING_ENCODER mode, in ticks per second
+        flywheelMotor.setVelocity(velocity);
+    }
+    public double getCurrentVelocity() { // getter RUN_USING_ENCODER mode, in ticks per second
         return flywheelMotor.getVelocity();
     }
-    public double getMotorPower() {
+
+    public void setMotorPower(double power){ //setter RUN_WITHOUT_ENCODER mode
+        flywheelMotor.setPower(power);
+    }
+    public double getMotorPower() { //getter RUN_WITHOUT_ENCODER mode
         return flywheelMotor.getPower();
     }
 
-    //Flywheel methods
-    public void setFlywheelMotorSpeed(double speed){ //setter
-        flywheelMotor.setPower(speed);
+    public void updateFlywheel(boolean incButton,
+                               boolean decButton,
+                               boolean stepButton,
+                               boolean bigZoneButton,
+                               boolean smallZoneButton,
+                               boolean resetButton,
+                               Telemetry telemetry) {
+        //handles changing between big/small launch zone speeds, adjusting speeds on the fly with the d-pad
+        if(smallZoneButton){
+            bigZone = false;
+        }
+        if(bigZoneButton){
+            bigZone = true;
+        }
+        if(resetButton){
+            if(bigZone){ bigZoneSpeed = startingBigZoneSpeed; }
+            else{ smallZoneSpeed = startingSmallZoneSpeed; }
+        }
+        double currentTargetSpeed;
+        if(bigZone){
+            currentTargetSpeed = bigZoneSpeed;
+        }
+        else{
+            currentTargetSpeed = smallZoneSpeed;
+        }
+        if(stepButton){
+            stepIndex = (stepIndex + 1) % stepSizes.length;
+        }
+        if(incButton){
+            currentTargetSpeed += stepSizes[stepIndex];
+        }
+        if(decButton){
+            currentTargetSpeed -= stepSizes[stepIndex];
+        }
+        if(bigZone){
+            bigZoneSpeed = currentTargetSpeed;
+        }
+        else{
+            smallZoneSpeed = currentTargetSpeed;
+        }
+        setVelocity(currentTargetSpeed);
+        telemetry.addData("target speed", currentTargetSpeed);
+        telemetry.addData("actual speed",getCurrentVelocity());
+        telemetry.addData("step size",stepSizes[stepIndex]);
     }
-    public double getFlywheelMotorSpeed() { //getter
-        return flywheelMotor.getPower();
-    }
+
 
     //Lift to launch servo methods
-    public void setLiftToLaunchServoPosition(double angle) { //setter
+    public void setLauncherServoPosition(double angle) { //setter
         ballLifterServo.setPosition(angle);
     }
-    public double getLiftToLaunchServoPosition() { //getter
+    public double getLauncherServoPosition() { //getter
         return ballLifterServo.getPosition();
     }
 }

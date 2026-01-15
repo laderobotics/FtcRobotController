@@ -25,15 +25,14 @@ public class FrenchFryTeleop extends OpMode {
     boolean cwButton, ccwButton; //buttons for turning the turn table automatically
     double cwPower, ccwPower; //triggers for turning the turn table manually
     boolean magPresent; //true when the magnet is present, aka, when turn table position is correct
-    double cannonSpeedMultiplier=0.8;
-    double launchPosition = 0.0;
-    double safePosition=0.33;
-    boolean safeToTurn = false;
-    double horizontal, vertical, rotate;
-    double slowTrigger=0;
+    double launchPosition = 0.0; //launcher servo position to launch an artifact
+    double safePosition=0.33; //launcher servo position to be safely out of the way of the turntable
+    boolean safeToTurn = false; //Used to prevent turntable from turning if the launcher servo is in the way
+    double horizontal, vertical, rotate; //read from the control sticks to drive the wheels
+    double slowTrigger=0; //Used to slow the robot down to a minimum 0f 25% (fully pressed)
     boolean driveFieldRelative = true; //start in Field Relative Driving mode
 
-    boolean atSpeed = false;
+    boolean atSpeed = false; //not used presently, but could be used to turn on indicator LED
     boolean isSpinningUp = false;
 
 
@@ -43,7 +42,7 @@ public class FrenchFryTeleop extends OpMode {
         turnTable.init(hardwareMap);
         launcher.init(hardwareMap);
         drive.init(hardwareMap);
-        launcher.setLiftToLaunchServoPosition(safePosition);
+        launcher.setLauncherServoPosition(safePosition);
         lift.init(hardwareMap);
 
     }
@@ -51,6 +50,7 @@ public class FrenchFryTeleop extends OpMode {
 
     @Override
     public void loop() {
+        //Intake control
         if (gamepad2.a){
             intake.setIntakeMotorPower(1.0);
             intake.setRollerServoPower(1.0);
@@ -67,6 +67,7 @@ public class FrenchFryTeleop extends OpMode {
 
         }
 
+        //Turntable control
         cwButton = gamepad2.left_bumper;
         ccwButton = gamepad2.right_bumper;
         cwPower = gamepad2.left_trigger;
@@ -79,57 +80,33 @@ public class FrenchFryTeleop extends OpMode {
         else if(cwPower>0.1 || ccwPower>0.1){
             turntableManual = true;
         }
-        launcher.setFlywheelMotorSpeed(0.2+(cannonSpeedMultiplier*gamepad2.right_trigger));
+
+        //Launch servo control
         if (gamepad2.dpad_up){
-            launcher.setLiftToLaunchServoPosition(launchPosition);
+            launcher.setLauncherServoPosition(launchPosition);
             safeToTurn=false;
         }
         else{
-            launcher.setLiftToLaunchServoPosition(safePosition);
+            launcher.setLauncherServoPosition(safePosition);
             safeToTurn=true;
         }
-        //New Turntable code to test
+        //back to turntable control now that we know if it's safe to turn
         if(turntableManual){ //Use the triggers to spin the turntable manually, ignoring the mag sensor
             turnTable.setTurnServoPower(0.5*(cwPower - ccwPower));
         }
         else{ //Use the bumpers to turn the turntable to the next magnet, self corrects to the left
             turnTable.updateTurnTable(safeToTurn&&cwButton,safeToTurn&&ccwButton, telemetry);
         }
-
-        /* Competition 1 Turntable code, test new code before deleting!
-        if (gamepad2.left_bumper) {
-           turnTable.setTurnServoPower(1.0);//You shall pass!
-                }
-        else if (gamepad2.right_bumper) {
-            if (turnTable.isMagnetPresent()) {
-                turnTable.setTurnServoPower(0.0);
-            }
-            else {
-                turnTable.setTurnServoPower(-1.0);
-                }
-            }
-        else {
-            turnTable.setTurnServoPower(0.0);
-        }*/
-
         telemetry.addData("Mag Sensor",magPresent);
 
-
-        telemetry.addData("right trigger",gamepad2.right_trigger);
-        telemetry.addData("power",launcher.getMotorPower());
-        telemetry.addData("velocity", launcher.getCurrentVelocity());
-
-
-        launcher.setFlywheelMotorSpeed(0.2+(cannonSpeedMultiplier*gamepad2.right_trigger));
-        if (gamepad2.dpad_up){
-            launcher.setLiftToLaunchServoPosition(launchPosition);
-            safeToTurn=false;
-        }
-        else{
-            launcher.setLiftToLaunchServoPosition(safePosition);
-            safeToTurn=true;
-        }
-
+        //Flywheel control
+        launcher.updateFlywheel(gamepad2.dpadRightWasPressed(), //push to increase current target velocity
+                                gamepad2.dpadLeftWasPressed(), //push to decrease current target velocity
+                                gamepad2.dpadDownWasPressed(), //push to switch between changing by 100 or 10
+                                gamepad2.xWasPressed(), //push to use small zone flywheel speed
+                                gamepad2.yWasPressed(), //push to use big zone flywheel speed
+                                gamepad2.backWasPressed(), //push to reset to default zone speeds
+                                telemetry); //allow flywheel to print telemetry to the screen
 
         horizontal= gamepad1.left_stick_x;
         vertical= -gamepad1.left_stick_y;
@@ -150,8 +127,10 @@ public class FrenchFryTeleop extends OpMode {
             drive.drive(vertical,horizontal,rotate,slowTrigger);
         }
 
-        //Lift Stuff XD
+        double velocity = launcher.getCurrentVelocity();
+        //Lift control
         if (gamepad1.dpad_up){
+            launcher.setVelocity(0);
             if(!lift.getLiftSensorTop()){
                 lift.setLiftMotorPower(1.0);
             }
@@ -165,6 +144,7 @@ public class FrenchFryTeleop extends OpMode {
             }
             else {
                 lift.setLiftMotorPower(0.0);
+                launcher.setVelocity(velocity);
             }
         }
         telemetry.addData("Motor Power",lift.getLiftMotorPower());
