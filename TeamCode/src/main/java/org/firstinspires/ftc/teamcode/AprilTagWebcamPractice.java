@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Disabled
-@TeleOp
+
+@Autonomous
 public class AprilTagWebcamPractice extends OpMode {
 
     AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
@@ -25,6 +26,7 @@ public class AprilTagWebcamPractice extends OpMode {
         aprilTagWebcam.update();
         AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
         telemetry.addData("id20 String",id20.toString());
+
 
     }
 }

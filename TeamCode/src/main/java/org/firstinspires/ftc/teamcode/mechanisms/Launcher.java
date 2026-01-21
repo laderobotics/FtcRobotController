@@ -19,7 +19,7 @@ public class Launcher {
     double smallZoneSpeed = startingSmallZoneSpeed;
     double startingBigZoneSpeed = 1680; //Starting point for flywheel speed for small launch zone far from goal
     double bigZoneSpeed = startingBigZoneSpeed;
-    double[] stepSizes = {100,10};
+    double[] stepSizes = {10,10};
     int stepIndex = 0;
     boolean bigZone = true;
 
@@ -29,9 +29,7 @@ public class Launcher {
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Control using speed not power
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //Keep spinning with momentum
         flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE); //Switch to reverse if spinning wrong way
-        //TODO switch the power wires to this motor to see if that makes the getVelocity match setVelocity
-        //TODO if above fix works, dial in P and F coefficients and place them here
-        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0,0,0,13.5);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(70.0,0,0,12.0);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         //lift to launch servo initialization
