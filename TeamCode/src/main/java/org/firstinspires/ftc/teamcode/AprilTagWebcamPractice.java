@@ -25,7 +25,7 @@ public class AprilTagWebcamPractice extends OpMode {
         //update the vision portal
         aprilTagWebcam.update();
         AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
-        telemetry.addData("id20 String",id20.toString());
+      aprilTagWebcam.displayDetectionTelemetry(id20);
 
 
     }

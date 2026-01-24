@@ -20,6 +20,9 @@ public class Launcher {
     double startingBigZoneSpeed = 1680; //Starting point for flywheel speed for small launch zone far from goal
     double bigZoneSpeed = startingBigZoneSpeed;
     double[] stepSizes = {10,10};
+    double m = 6.09952;
+    double b = 967.57624;
+    double startingB=b;
     int stepIndex = 0;
     boolean bigZone = true;
 
@@ -59,40 +62,45 @@ public class Launcher {
                                boolean bigZoneButton,
                                boolean smallZoneButton,
                                boolean resetButton,
+                               double range,
                                Telemetry telemetry) {
         //handles changing between big/small launch zone speeds, adjusting speeds on the fly with the d-pad
-        if(smallZoneButton){
-            bigZone = false;
-        }
-        if(bigZoneButton){
-            bigZone = true;
-        }
+//        if(smallZoneButton){
+//            bigZone = false;
+//        }
+//        if(bigZoneButton){
+//            bigZone = true;
+//        }
+
+
         if(resetButton){
-            if(bigZone){ bigZoneSpeed = startingBigZoneSpeed; }
-            else{ smallZoneSpeed = startingSmallZoneSpeed; }
+            b=startingB;
+//            if(bigZone){ bigZoneSpeed = startingBigZoneSpeed; }
+//            else{ smallZoneSpeed = startingSmallZoneSpeed; }
         }
         double currentTargetSpeed;
-        if(bigZone){
-            currentTargetSpeed = bigZoneSpeed;
-        }
-        else{
-            currentTargetSpeed = smallZoneSpeed;
-        }
-        if(stepButton){
-            stepIndex = (stepIndex + 1) % stepSizes.length;
-        }
+        currentTargetSpeed = m*range+b;
+//        if(bigZone){
+//            currentTargetSpeed = bigZoneSpeed;
+//        }
+//        else{
+//            currentTargetSpeed = smallZoneSpeed;
+//        }
+//        if(stepButton){
+//            stepIndex = (stepIndex + 1) % stepSizes.length;
+//        }
         if(incButton){
-            currentTargetSpeed += stepSizes[stepIndex];
+            b += 10;
         }
         if(decButton){
-            currentTargetSpeed -= stepSizes[stepIndex];
+            b -= 10;
         }
-        if(bigZone){
-            bigZoneSpeed = currentTargetSpeed;
-        }
-        else{
-            smallZoneSpeed = currentTargetSpeed;
-        }
+//        if(bigZone){
+//            bigZoneSpeed = currentTargetSpeed;
+//        }
+//        else{
+//            smallZoneSpeed = currentTargetSpeed;
+//        }
         setVelocity(currentTargetSpeed);
         telemetry.addData("target speed", currentTargetSpeed);
         telemetry.addData("actual speed",getCurrentVelocity());

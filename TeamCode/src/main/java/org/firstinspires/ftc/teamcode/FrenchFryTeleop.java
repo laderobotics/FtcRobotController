@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 //TODO Calibrate F and P values to switch between speeds and return to speed optimally.
 //TODO Use PIDF coefficients in this opMode like in the Flywheel tuner opMode.
@@ -20,6 +22,8 @@ public class FrenchFryTeleop extends OpMode {
     Launcher launcher=new Launcher();
     MecanumDrive drive= new MecanumDrive();
     Lift lift=new Lift();
+
+    AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
     boolean turntableManual = false; //false = auto turn to magnet with bumpers,
                                    // true = manual control with triggers
     boolean cwButton, ccwButton; //buttons for turning the turn table automatically
@@ -34,6 +38,8 @@ public class FrenchFryTeleop extends OpMode {
 
     boolean atSpeed = false; //not used presently, but could be used to turn on indicator LED
     boolean isSpinningUp = false;
+    double range;
+    double prevRange=120;
 
 
     @Override
@@ -43,13 +49,21 @@ public class FrenchFryTeleop extends OpMode {
         launcher.init(hardwareMap);
         drive.init(hardwareMap);
         launcher.setLauncherServoPosition(safePosition);
+        aprilTagWebcam.init(hardwareMap, telemetry);
         lift.init(hardwareMap);
+
 
     }
 
 
     @Override
     public void loop() {
+        //update the vision portal
+        aprilTagWebcam.update();
+        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
+        aprilTagWebcam.displayDetectionTelemetry(id20);
+        range = aprilTagWebcam.getDetectionRange(id20);
+        telemetry.addData("range",range);
         //Intake control
         if (gamepad2.a){
             intake.setIntakeMotorPower(1.0);
@@ -106,6 +120,7 @@ public class FrenchFryTeleop extends OpMode {
                                 gamepad2.xWasPressed(), //push to use small zone flywheel speed
                                 gamepad2.yWasPressed(), //push to use big zone flywheel speed
                                 gamepad2.backWasPressed(), //push to reset to default zone speeds
+                                range, //Range to goal (as measured by april tag, in inches)
                                 telemetry); //allow flywheel to print telemetry to the screen
 
         horizontal= gamepad1.left_stick_x;

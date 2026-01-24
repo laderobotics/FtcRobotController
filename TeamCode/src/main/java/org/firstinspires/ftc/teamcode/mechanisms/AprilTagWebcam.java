@@ -52,7 +52,7 @@ public class AprilTagWebcam {
 
 
     public void displayDetectionTelemetry(AprilTagDetection detection){
-        if(detection == null) {return;}
+         if(detection == null) {return;}
          if (detection.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
             telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
@@ -63,7 +63,13 @@ public class AprilTagWebcam {
             telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
         }
     }
-
+    public double getDetectionRange(AprilTagDetection detection){
+        if (detection==null) {return -1;}//no april tags in view
+        if (detection.metadata != null) {// return the range to the april tag in inches.
+            return detection.ftcPose.range;
+        }
+        else {return -1;}//if the webcam sees a april tag that's not a ftc april tag.
+    }
     public AprilTagDetection getTagBySpecificId(int id){
         for(AprilTagDetection detection : detectedTags){
             if(detection.id == id){
