@@ -63,6 +63,12 @@ public class FrenchFryTeleop extends OpMode {
         AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
         aprilTagWebcam.displayDetectionTelemetry(id20);
         range = aprilTagWebcam.getDetectionRange(id20);
+        if (range==-1){
+            range=prevRange;
+        }
+        else {
+            prevRange=range;
+        }
         telemetry.addData("range",range);
         //Intake control
         if (gamepad2.a){
