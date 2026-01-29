@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.tutorials;
+package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.LED;
 
-public class TestBenchLED {
+public class RevLEDIndicator {
     private LED redLed;
     private LED greenLed;
 

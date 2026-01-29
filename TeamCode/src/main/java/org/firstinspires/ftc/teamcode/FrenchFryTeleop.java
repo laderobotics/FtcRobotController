@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.Lift;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.RevLEDIndicator;
 import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
@@ -24,6 +25,8 @@ public class FrenchFryTeleop extends OpMode {
     Lift lift=new Lift();
 
     AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
+
+    RevLEDIndicator led = new RevLEDIndicator();
     boolean turntableManual = false; //false = auto turn to magnet with bumpers,
                                    // true = manual control with triggers
     boolean cwButton, ccwButton; //buttons for turning the turn table automatically
@@ -41,6 +44,8 @@ public class FrenchFryTeleop extends OpMode {
     double range;
     double prevRange=120;
 
+    double launchSpreadAngle = 5;
+
 
     @Override
     public void init() {
@@ -51,6 +56,7 @@ public class FrenchFryTeleop extends OpMode {
         launcher.setLauncherServoPosition(safePosition);
         aprilTagWebcam.init(hardwareMap, telemetry);
         lift.init(hardwareMap);
+        led.init(hardwareMap);
 
 
     }
@@ -63,12 +69,15 @@ public class FrenchFryTeleop extends OpMode {
         AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
         aprilTagWebcam.displayDetectionTelemetry(id20);
         range = aprilTagWebcam.getDetectionRange(id20);
+
         if (range==-1){
             range=prevRange;
         }
         else {
+
             prevRange=range;
         }
+        double angle = aprilTagWebcam.getDetectionAngle(id20);
         telemetry.addData("range",range);
         //Intake control
         if (gamepad2.a){
@@ -109,6 +118,19 @@ public class FrenchFryTeleop extends OpMode {
         else{
             launcher.setLauncherServoPosition(safePosition);
             safeToTurn=true;
+        }
+
+        if (angle<=launchSpreadAngle&&angle>=-launchSpreadAngle){
+            led.setRedLed(false);
+            led.setGreenLed(true);
+        }
+        else if (angle==180) {
+            led.setGreenLed(false);
+            led.setRedLed(true);
+        }
+        else {
+            led.setGreenLed(true);
+            led.setRedLed(true);
         }
         //back to turntable control now that we know if it's safe to turn
         if(turntableManual){ //Use the triggers to spin the turntable manually, ignoring the mag sensor
