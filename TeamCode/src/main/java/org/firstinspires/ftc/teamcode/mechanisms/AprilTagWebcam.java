@@ -71,11 +71,11 @@ public class AprilTagWebcam {
         else {return -1;}//if the webcam sees a april tag that's not a ftc april tag.
     }
     public double getDetectionAngle(AprilTagDetection detection){
-        if (detection==null) {return -1;}//no april tags in view
+        if (detection==null) {return 180;}//no april tags in view
         if (detection.metadata != null) {// return the range to the april tag in inches.
-            return detection.ftcPose.yaw;
+            return detection.ftcPose.bearing;
         }
-        else {return -1;}//if the webcam sees a april tag that's not a ftc april tag.
+        else {return 180;}//if the webcam sees a april tag that's not a ftc april tag.//lol 67XD
     }
     public AprilTagDetection getTagBySpecificId(int id){
         for(AprilTagDetection detection : detectedTags){

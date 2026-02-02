@@ -112,8 +112,22 @@ public class FrenchFryTeleop extends OpMode {
 
         //Launch servo control
         if (gamepad2.dpad_up){
-            launcher.setLauncherServoPosition(launchPosition);
-            safeToTurn=false;
+            if (angle<=launchSpreadAngle && angle>=-launchSpreadAngle){
+                launcher.setLauncherServoPosition(launchPosition);
+                safeToTurn=false;
+            } else if (angle == 180) {
+                launcher.setLauncherServoPosition(launchPosition);
+                safeToTurn=false;
+            }
+            else {
+                if (angle<0){
+                    drive.drive(0,0,0.25,0);
+
+                }
+                else{
+                    drive.drive(0,0,-0.25,0);
+                }
+            }
         }
         else{
             launcher.setLauncherServoPosition(safePosition);
@@ -124,7 +138,7 @@ public class FrenchFryTeleop extends OpMode {
             led.setRedLed(false);
             led.setGreenLed(true);
         }
-        else if (angle==180) {
+        else if (angle==180.0) {
             led.setGreenLed(false);
             led.setRedLed(true);
         }
