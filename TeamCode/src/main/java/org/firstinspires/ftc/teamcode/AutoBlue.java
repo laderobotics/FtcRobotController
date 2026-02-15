@@ -35,6 +35,9 @@ public class AutoBlue extends LinearOpMode{
     double prevRange=120;
 
     double launchSpreadAngle = 5;
+    int locateCount22=0;
+    int locateCount23=0;
+
 
     public void runOpMode(){
         intake.init(hardwareMap);
@@ -45,12 +48,40 @@ public class AutoBlue extends LinearOpMode{
         aprilTagWebcam.init(hardwareMap, telemetry);
         lift.init(hardwareMap);
         led.init(hardwareMap);
-
+        waitForStart();
         //1)scan obelisk pattern
-        aprilTagWebcam.update();
         List<AprilTagDetection> detectedTags = new ArrayList<>();
-        detectedTags=aprilTagWebcam.getDetectedTags();
-        //2)Rotate turn table if needed
+        for (int i=0;i<10;i++){
+            aprilTagWebcam.update();
+            detectedTags=aprilTagWebcam.getDetectedTags();
+            for(AprilTagDetection detection : detectedTags){
+                if(detection.id == 22){
+                    locateCount22++;
+                } else if (detection.id == 23) {
+                   locateCount23++;
+
+                }
+            }
+            sleep(20);
+        }
+        telemetry.addData("22 detections",locateCount22);
+        telemetry.addData("23 detections",locateCount23);
+        //2)Rotate turn table if needed (Green ball in the launcher)
+        sleep(5000);
+        if(locateCount22 > 0){
+            //if id is 22 turn turn table twice to the left
+            turnTable.updateTurnTable(false,true,telemetry);
+            while (turnTable.updateTurnTable(false,false,telemetry)!= TurnTable.TurntableState.IDLE){
+                //do nothing while the turn table turning
+            }
+        } else if (locateCount23 > 0) {
+            //if id is 24 turn turn table once to the left
+            turnTable.updateTurnTable(true,false,telemetry);
+            while (turnTable.updateTurnTable(false,false,telemetry)!= TurnTable.TurntableState.IDLE){
+                //do nothing while the turn table turning
+            }
+        }
+
         //3) Auto aim towards
         //4)fire the artifacts
         //5)turn table repeat 3x
@@ -58,7 +89,7 @@ public class AutoBlue extends LinearOpMode{
 
 
 
-    }
+    } //67//67//67//67//
 
 
 

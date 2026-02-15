@@ -11,10 +11,11 @@ public class TurnTable {
     private CRServo turnServo; //This is the servo that turns the turntable
     private TouchSensor magSensor; //This is the sensor that tells the table when to stop turning
 
-    private enum TurntableState {
+    public enum TurntableState {
         IDLE,
         MOVING_OFF_MAGNET,
-        SEARCHING_FOR_MAGNET
+        SEARCHING_FOR_MAGNET,
+        ERROR
     }
 
     TurntableState state = TurntableState.IDLE;
@@ -37,15 +38,15 @@ public class TurnTable {
 
     //With the help of ChatGPT I made a state machine for the turntable!  I adjusted it to use both bumpers
     // so we can turn the turntable either direction.  Needs testing!
-    public void updateTurnTable(boolean cwButton, boolean ccwButton, Telemetry telemetry){
+    public TurntableState updateTurnTable(boolean cwButton, boolean ccwButton, Telemetry telemetry){
         boolean magnetDetected = magSensor.isPressed();
         telemetry.addData("Turntable State",state);
         switch (state){
             case IDLE:
                 //Driver 2 command -> Go to next magnet
                 if(cwButton){
-                    turnServo.setPower(0.5);
-                    turnPower = 0.5;
+                    turnServo.setPower(0.4);
+                    turnPower = 0.4;
                     turnDirection = 1;
                     state = TurntableState.MOVING_OFF_MAGNET;
                 }
@@ -61,7 +62,7 @@ public class TurnTable {
                     turnServo.setPower(-0.1);
                     state = TurntableState.SEARCHING_FOR_MAGNET;
                 }
-                break;
+                return TurntableState.IDLE ;
 
             case MOVING_OFF_MAGNET:
                 //Wait until we leave the current magnet
@@ -69,11 +70,11 @@ public class TurnTable {
                     turnServo.setPower(turnDirection*turnPower);
                     state = TurntableState.SEARCHING_FOR_MAGNET;
                 }
-                break;
+                return TurntableState.MOVING_OFF_MAGNET ;
 
             case SEARCHING_FOR_MAGNET:
                 //Stop on next magnet - slow as you approach
-                if(turnPower>0.15){
+                if(turnPower>0.1){
                     turnServo.setPower(turnDirection*turnPower);
                     turnPower -= 0.05; //adjust this number until turntable slows enough to catch next magnet
                 }
@@ -81,8 +82,10 @@ public class TurnTable {
                     turnServo.setPower(0);
                     state = TurntableState.IDLE;
                 }
-                break;
+                return TurntableState.SEARCHING_FOR_MAGNET ;
         }
+
+        return TurntableState.ERROR;
     }
 
 }

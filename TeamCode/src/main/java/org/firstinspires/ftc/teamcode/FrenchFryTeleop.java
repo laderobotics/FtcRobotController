@@ -135,7 +135,7 @@ public class FrenchFryTeleop extends OpMode {
         }
 
         if (angle<=launchSpreadAngle&&angle>=-launchSpreadAngle){
-            led.setRedLed(false);
+            led.setRedLed(true);
             led.setGreenLed(true);
         }
         else if (angle==180.0) {
@@ -144,11 +144,11 @@ public class FrenchFryTeleop extends OpMode {
         }
         else {
             led.setGreenLed(true);
-            led.setRedLed(true);
+            led.setRedLed(false);
         }
         //back to turntable control now that we know if it's safe to turn
         if(turntableManual){ //Use the triggers to spin the turntable manually, ignoring the mag sensor
-            turnTable.setTurnServoPower(0.5*(cwPower - ccwPower));
+            turnTable.setTurnServoPower(0.25 *(cwPower - ccwPower));
         }
         else{ //Use the bumpers to turn the turntable to the next magnet, self corrects to the left
             turnTable.updateTurnTable(safeToTurn&&cwButton,safeToTurn&&ccwButton, telemetry);
@@ -176,37 +176,39 @@ public class FrenchFryTeleop extends OpMode {
 
         if(driveFieldRelative){
             drive.driveFieldRelative(vertical,horizontal,rotate,slowTrigger);
+            telemetry.addLine("*** Field Relative ***");
             if(gamepad1.y){
                 drive.resetYaw();
             }
         }
         else{
             drive.drive(vertical,horizontal,rotate,slowTrigger);
+            telemetry.addLine("--- Robot Relative ---");
         }
 
         double velocity = launcher.getCurrentVelocity();
-        //Lift control
-        if (gamepad1.dpad_up){
-            launcher.setVelocity(0);
-            if(!lift.getLiftSensorTop()){
-                lift.setLiftMotorPower(1.0);
-            }
-            else {
-                lift.setLiftMotorPower(0.0);
-            }
-        }
-        else {
-            if (!lift.getLiftSensorBottom()){
-                lift.setLiftMotorPower(-1.0);
-            }
-            else {
-                lift.setLiftMotorPower(0.0);
-                launcher.setVelocity(velocity);
-            }
-        }
-        telemetry.addData("Motor Power",lift.getLiftMotorPower());
-        telemetry.addData("Top Sensor",lift.getLiftSensorTop());
-        telemetry.addData("Bottom Sensor",lift.getLiftSensorBottom());
+//        //Lift control
+//        if (gamepad1.dpad_up){
+//            launcher.setVelocity(0);
+//            if(!lift.getLiftSensorTop()){
+//                lift.setLiftMotorPower(1.0);
+//            }
+//            else {
+//                lift.setLiftMotorPower(0.0);
+//            }
+//        }
+//        else {
+//            if (!lift.getLiftSensorBottom()){
+//                lift.setLiftMotorPower(-1.0);
+//            }
+//            else {
+//                lift.setLiftMotorPower(0.0);
+//                launcher.setVelocity(velocity);
+//            }
+//        }
+//        telemetry.addData("Motor Power",lift.getLiftMotorPower());
+//        telemetry.addData("Top Sensor",lift.getLiftSensorTop());
+//        telemetry.addData("Bottom Sensor",lift.getLiftSensorBottom());
 
 
     }
