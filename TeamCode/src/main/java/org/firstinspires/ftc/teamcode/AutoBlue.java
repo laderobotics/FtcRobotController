@@ -34,6 +34,9 @@ public class AutoBlue extends LinearOpMode{
     double range;
     double prevRange=120;
 
+    double angle;
+
+
     double launchSpreadAngle = 5;
     int locateCount22=0;
     int locateCount23=0;
@@ -67,7 +70,7 @@ public class AutoBlue extends LinearOpMode{
         telemetry.addData("22 detections",locateCount22);
         telemetry.addData("23 detections",locateCount23);
         //2)Rotate turn table if needed (Green ball in the launcher)
-        sleep(5000);
+        //sleep(5000);
         if(locateCount22 > 0){
             //if id is 22 turn turn table twice to the left
             turnTable.updateTurnTable(false,true,telemetry);
@@ -83,6 +86,37 @@ public class AutoBlue extends LinearOpMode{
         }
 
         //3) Auto aim towards
+        aprilTagWebcam.update();
+        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
+        aprilTagWebcam.displayDetectionTelemetry(id20);
+        range = aprilTagWebcam.getDetectionRange(id20);
+
+        if (range==-1){
+            range=prevRange;
+        }
+        else {
+
+            prevRange=range;
+        }
+        double angle = aprilTagWebcam.getDetectionAngle(id20);
+        telemetry.addData("range",range);
+
+        launcher.updateFlywheel(false, //push to increase current target velocity
+                false, //push to decrease current target velocity
+                false, //push to switch between changing by 100 or 10
+                false, //push to use small zone flywheel speed
+                false, //push to use big zone flywheel speed
+                false, //push to reset to default zone speeds
+                range, //Range to goal (as measured by april tag, in inches)
+                telemetry); //allow flywheel to print telemetry to the screen
+
+
+
+
+
+
+
+
         //4)fire the artifacts
         //5)turn table repeat 3x
         //6) move out of triangle

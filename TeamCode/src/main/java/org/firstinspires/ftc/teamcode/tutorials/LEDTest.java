@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.tutorials;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.RevLEDIndicator;
-
+@Disabled
 @TeleOp
 public class LEDTest extends OpMode {
 

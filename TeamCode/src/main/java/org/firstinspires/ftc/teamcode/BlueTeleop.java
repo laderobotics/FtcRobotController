@@ -12,11 +12,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.RevLEDIndicator;
 import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-//TODO Calibrate F and P values to switch between speeds and return to speed optimally.
-//TODO Use PIDF coefficients in this opMode like in the Flywheel tuner opMode.
-
 @TeleOp
-public class FrenchFryTeleop extends OpMode {
+public class BlueTeleop extends OpMode {
 
     Intake intake = new Intake();
     TurnTable turnTable = new TurnTable();
@@ -37,10 +34,9 @@ public class FrenchFryTeleop extends OpMode {
     boolean safeToTurn = false; //Used to prevent turntable from turning if the launcher servo is in the way
     double horizontal, vertical, rotate; //read from the control sticks to drive the wheels
     double slowTrigger=0; //Used to slow the robot down to a minimum 0f 25% (fully pressed)
-    boolean driveFieldRelative = true; //start in Field Relative Driving mode
+    boolean driveFieldRelative = false; //start in Robot Relative Driving mode
 
-    boolean atSpeed = false; //not used presently, but could be used to turn on indicator LED
-    boolean isSpinningUp = false;
+
     double range;
     double prevRange=120;
 
@@ -119,7 +115,7 @@ public class FrenchFryTeleop extends OpMode {
                 launcher.setLauncherServoPosition(launchPosition);
                 safeToTurn=false;
             }
-            else {
+            else { //Auto-Aim!  If robot can see the april tag but not pointed well, autocorrect
                 if (angle<0){
                     drive.drive(0,0,0.25,0);
 
@@ -187,29 +183,15 @@ public class FrenchFryTeleop extends OpMode {
         }
 
         double velocity = launcher.getCurrentVelocity();
-//        //Lift control
-//        if (gamepad1.dpad_up){
-//            launcher.setVelocity(0);
-//            if(!lift.getLiftSensorTop()){
-//                lift.setLiftMotorPower(1.0);
-//            }
-//            else {
-//                lift.setLiftMotorPower(0.0);
-//            }
-//        }
-//        else {
-//            if (!lift.getLiftSensorBottom()){
-//                lift.setLiftMotorPower(-1.0);
-//            }
-//            else {
-//                lift.setLiftMotorPower(0.0);
-//                launcher.setVelocity(velocity);
-//            }
-//        }
-//        telemetry.addData("Motor Power",lift.getLiftMotorPower());
-//        telemetry.addData("Top Sensor",lift.getLiftSensorTop());
-//        telemetry.addData("Bottom Sensor",lift.getLiftSensorBottom());
-
+        //Lift control
+        if (gamepad1.dpad_up){
+            launcher.setVelocity(0);
+            lift.raiseLift();
+        }
+        else if (gamepad1.dpad_down){
+            lift.lowerLift();
+        }
+        telemetry.addData("Motor Power",lift.getLiftMotorPower());
 
     }
 }
