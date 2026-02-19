@@ -28,13 +28,11 @@ public class Lift {
     }
     public void raiseLift(){
         liftMotor.setTargetPosition(liftPosition);
-        liftMotor.setPower(0.25);
-        //wait for lift to raise?
+        liftMotor.setPower(1);
     }
     public void lowerLift(){
         liftMotor.setTargetPosition(0);
-        liftMotor.setPower(-0.25);//or do we reverse direction and then give positive power?
-        //wait for lift to raise?
+        liftMotor.setPower(-1);
     }
     public double getLiftMotorPower(){
         return liftMotor.getPower();

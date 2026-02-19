@@ -40,7 +40,8 @@ public class BlueTeleop extends OpMode {
     double range;
     double prevRange=120;
 
-    double launchSpreadAngle = 5;
+    double launchSpreadAngle = 0.5;
+    double launchAngleOffset = 3;
 
 
     @Override
@@ -116,7 +117,7 @@ public class BlueTeleop extends OpMode {
                 safeToTurn=false;
             }
             else { //Auto-Aim!  If robot can see the april tag but not pointed well, autocorrect
-                if (angle<0){
+                if (angle<0+launchAngleOffset){
                     drive.drive(0,0,0.25,0);
 
                 }
@@ -130,7 +131,7 @@ public class BlueTeleop extends OpMode {
             safeToTurn=true;
         }
 
-        if (angle<=launchSpreadAngle&&angle>=-launchSpreadAngle){
+        if (angle<=(launchSpreadAngle+launchAngleOffset)&&angle>=(-launchSpreadAngle+launchAngleOffset)){
             led.setRedLed(true);
             led.setGreenLed(true);
         }
