@@ -41,7 +41,7 @@ public class BlueTeleop extends OpMode {
     double prevRange=120;
 
     double launchSpreadAngle = 0.5;
-    double launchAngleOffset = 3;
+    double launchAngleOffset = -5;
 
 
     @Override
@@ -109,7 +109,7 @@ public class BlueTeleop extends OpMode {
 
         //Launch servo control
         if (gamepad2.dpad_up){
-            if (angle<=launchSpreadAngle && angle>=-launchSpreadAngle){
+            if (angle<=(launchSpreadAngle+launchAngleOffset) && angle>=(-launchSpreadAngle+launchAngleOffset)){
                 launcher.setLauncherServoPosition(launchPosition);
                 safeToTurn=false;
             } else if (angle == 180) {
@@ -193,6 +193,5 @@ public class BlueTeleop extends OpMode {
             lift.lowerLift();
         }
         telemetry.addData("Motor Power",lift.getLiftMotorPower());
-
     }
 }
