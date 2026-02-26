@@ -45,15 +45,15 @@ public class TurnTable {
             case IDLE:
                 //Driver 2 command -> Go to next magnet
                 if(cwButton){
-                    turnServo.setPower(0.4);
+                    turnServo.setPower(-0.4);
                     turnPower = 0.4;
-                    turnDirection = 1;
+                    turnDirection = -1;
                     state = TurntableState.MOVING_OFF_MAGNET;
                 }
                 else if(ccwButton){
-                    turnServo.setPower(-0.5);
-                    turnPower = 0.5;
-                    turnDirection = -1;
+                    turnServo.setPower(0.4);
+                    turnPower = 0.4;
+                    turnDirection = 1;
                     state = TurntableState.MOVING_OFF_MAGNET;
                 }
                 //Drift Detected, reverse

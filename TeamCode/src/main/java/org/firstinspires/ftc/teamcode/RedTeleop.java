@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.TurnTable;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @TeleOp
-public class BlueTeleop extends OpMode {
+public class RedTeleop extends OpMode {
 
     Intake intake = new Intake();
     TurnTable turnTable = new TurnTable();
@@ -63,9 +63,9 @@ public class BlueTeleop extends OpMode {
     public void loop() {
         //update the vision portal
         aprilTagWebcam.update();
-        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
-        aprilTagWebcam.displayDetectionTelemetry(id20);
-        range = aprilTagWebcam.getDetectionRange(id20);
+        AprilTagDetection id24 = aprilTagWebcam.getTagBySpecificId(24);
+        aprilTagWebcam.displayDetectionTelemetry(id24);
+        range = aprilTagWebcam.getDetectionRange(id24);
 
         if (range==-1){
             range=prevRange;
@@ -74,7 +74,7 @@ public class BlueTeleop extends OpMode {
 
             prevRange=range;
         }
-        double angle = aprilTagWebcam.getDetectionAngle(id20);
+        double angle = aprilTagWebcam.getDetectionAngle(id24);
         telemetry.addData("range",range);
         //Intake control
         if (gamepad2.a){

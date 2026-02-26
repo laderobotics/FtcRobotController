@@ -90,10 +90,10 @@ public class Launcher {
 //            stepIndex = (stepIndex + 1) % stepSizes.length;
 //        }
         if(incButton){
-            b += 10;
+            b += 100;
         }
         if(decButton){
-            b -= 10;
+            b -= 100;
         }
 //        if(bigZone){
 //            bigZoneSpeed = currentTargetSpeed;
