@@ -8,10 +8,12 @@ public class AudrinaHelloWorld extends OpMode {
 
 
     @Override
-    public void init_loop()
+    public void init() {
+        telemetry.addData("what do you call to guys who love math...","");
+    }
 
     @Override
     public void loop() {
-
+        telemetry.addData("ALGABROS","");
     }
 }
