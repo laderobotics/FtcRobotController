@@ -9,7 +9,7 @@ public class litzyhelloworld extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("why do birds fly south in winter","")
+        telemetry.addData("why do birds fly south in winter","");
     }
 
     @Override
