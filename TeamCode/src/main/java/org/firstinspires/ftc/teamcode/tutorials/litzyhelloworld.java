@@ -9,12 +9,12 @@ public class litzyhelloworld extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("why do birds fly south in winter","\n")
+        telemetry.addData("why do birds fly south in winter","")
     }
 
     @Override
     public void loop() {
-
+        telemetry.addData("because it's to far to walk!","");
     }
 }
 
