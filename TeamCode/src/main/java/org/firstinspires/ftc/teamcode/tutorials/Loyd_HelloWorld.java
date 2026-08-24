@@ -9,11 +9,11 @@ public class Loyd_HelloWorld extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("I only wanted to be a math teacher because...","\n")
+        telemetry.addData("I only wanted to be a math teacher because...","");
     }
 
     @Override
     public void loop() {
-
+        telemetry.addData("I heard there would be pi!","");
     }
 }
