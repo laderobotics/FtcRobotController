@@ -4,17 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class litzyhelloworld extends OpMode {
-
+public class litzybuttontest extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("why do birds fly south in winter","");
+
     }
 
     @Override
     public void loop() {
-        telemetry.addData("because it's to far to walk!","");
+      if (gamepad1.a){
+          telemetry.addData("hehheheheh",gamepad1.a);
+      }
+      if (gamepad1.dpad_up){
+          telemetry.addData("Hi am a tree.","up");
+      }
+      if (gamepad1.back){
     }
 }
-
