@@ -14,6 +14,3 @@ public class joledHelloWorld extends OpMode {
 
     @Override
     public void loop() {
-
-    }
-}
