@@ -20,7 +20,7 @@ public class litzybuttontest extends OpMode {
           telemetry.addData("Hi am a tree.","up");
       }
       if (gamepad1.back){
-          telemetry.addData("yayayyayay,gamepad1.back);
+          telemetry.addData("yayayyayay",gamepad1.back);
       }
       if (gamepad1.b){
           telemetry.addData("The cat in the hat",gamepad2.b);
