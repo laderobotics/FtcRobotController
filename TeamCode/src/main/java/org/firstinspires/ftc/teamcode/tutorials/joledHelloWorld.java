@@ -9,7 +9,7 @@ public class joledHelloWorld extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("Why don't eggs tell jokes", "\n")
+        telemetry.addData("Why don't eggs tell jokes", "\n");
     }
 
     @Override
