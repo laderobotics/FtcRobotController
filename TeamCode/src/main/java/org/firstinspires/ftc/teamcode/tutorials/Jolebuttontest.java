@@ -16,17 +16,25 @@ public class Jolebuttontest extends OpMode {
 
     @Override
     public void loop() {
-            if(gamepad1.a) {
-                telemetry.addData("the power friendship",gamepad1.a);
-            }
-            if (gamepad1.b){
-                telemetry.addData("lorax",gamepad1.b);
-            }
-            if (gamepad1.back) {
-                telemetry.addData("hunger games",gamepad1.back);
-            }
-            if (gamepad1.dpad_down) {
-                telemetry.addData("let it go",gamepad1.dpad_down);
-            }
+        if (gamepad1.a) {
+            telemetry.addData("the power friendship", gamepad1.a);
+        }
+        if (gamepad1.b) {
+            telemetry.addData("lorax", gamepad1.b);
+        }
+        if (gamepad1.back) {
+            telemetry.addData("hunger games", gamepad1.back);
+        }
+        if (gamepad1.dpad_down) {
+            telemetry.addData("let it go", gamepad1.dpad_down);
+        }
+
+
+        telemetry.addData("left x", gamepad1.left_stick_x);
+        telemetry.addData("left y",gamepad1.left_stick_y);
+        telemetry.addData("right x",gamepad1.right_stick_x);
+        telemetry.addData("left y",gamepad1.right_stick_y);
+
     }
+
 }
