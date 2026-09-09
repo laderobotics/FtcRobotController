@@ -12,3 +12,9 @@ public class joledHelloWorld extends OpMode {
         telemetry.addData("Why don't eggs tell jokes", "\n");
     }
 
+    @Override
+    public void loop() {
+
+    }
+}
+
