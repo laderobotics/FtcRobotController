@@ -16,7 +16,9 @@ public class litzymotor extends OpMode {
     @Override
     public void loop() {
 
-        double vertica =
+        double vertical = -1*gamepad1.left_stick_y;
+        double horizontal = gamepad1.left_stick_x;
+        double rotation = gamepad1.right_stick_x;
 
     }
 }
