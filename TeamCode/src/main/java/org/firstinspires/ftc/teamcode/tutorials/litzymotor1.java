@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.tutorials;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
 @TeleOp
 
-public class litzymotor extends OpMode {
+public static class litzymotor1 extends OpMode {
+
 
 
     @Override
