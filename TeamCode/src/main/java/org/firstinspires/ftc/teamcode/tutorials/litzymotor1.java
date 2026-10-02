@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 
-public static class litzymotor1 extends OpMode {
+public class litzymotor1 extends OpMode {
 
 
 
