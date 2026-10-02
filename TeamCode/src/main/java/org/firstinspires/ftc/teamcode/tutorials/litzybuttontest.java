@@ -13,17 +13,26 @@ public class litzybuttontest extends OpMode {
 
     @Override
     public void loop() {
-      if (gamepad1.a){
-          telemetry.addData("hehheheheh",gamepad1.a);
-      }
-      if (gamepad1.dpad_up){
-          telemetry.addData("Hi am a tree.","up");
-      }
-      if (gamepad1.back){
-          telemetry.addData("yayayyayay",gamepad1.back);
-      }
-      if (gamepad1.b){
-          telemetry.addData("The cat in the hat",gamepad2.b);
-      }
+        if (gamepad1.a) {
+            telemetry.addData("hehheheheh", gamepad1.a);
+        }
+        if (gamepad1.dpad_up) {
+            telemetry.addData("Hi am a tree.", "up");
+        }
+        if (gamepad1.back) {
+            telemetry.addData("yayayyayay", gamepad1.back);
+        }
+        if (gamepad1.b) {
+            telemetry.addData("The cat in the hat", gamepad2.b);
+        }
+
+
+        telemetry.addData("left x", gamepad1.left_stick_x);
+        telemetry.addData("left y", gamepad1.left_stick_y);
+        telemetry.addData("right x", gamepad1.right_stick_x);
+        telemetry.addData("right y",gamepad1.right_stick_y);
+
+
     }
+
 }
