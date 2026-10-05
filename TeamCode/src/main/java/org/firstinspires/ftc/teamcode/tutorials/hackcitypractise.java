@@ -17,7 +17,7 @@ public class hackcitypractise extends OpMode {
     @Override
     public void loop() {
     if (gamepad1.a) {
-        hackcitybench.setMotorSpeed(gamepad1.right_stick_x);
+        hackcitybench.setMotorSpeed(gamepad1.right_stick_y);
         hackcitybench.setMotorSpeed(0.5); // stops the motor
     }
     else {
