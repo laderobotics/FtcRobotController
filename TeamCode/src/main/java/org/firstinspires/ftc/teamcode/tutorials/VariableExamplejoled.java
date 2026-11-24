@@ -21,10 +21,11 @@ public class VariableExamplejoled extends OpMode {
     }
 
 @Override
-public void loop()
+public void loop(){
     /*
     1.Change the String variable "name" to your team name.
     2.Create an int called "motorAngle" and store and angle between 0-180.Display this in your init
     method.
      */
+    }
 }

@@ -6,8 +6,8 @@ public class VariableExample {
     double motoSpeed;
     boolean clawClosed;
 
-    robotHeight = 10;
-    motorSpeed = 0.5;
-    clawClosed = true;
-    8+ x = 25
+    //robotHeight = 10;
+    //motorSpeed = 0.5;
+    //clawClosed = true;
+   // 8+ x = 25
 }
