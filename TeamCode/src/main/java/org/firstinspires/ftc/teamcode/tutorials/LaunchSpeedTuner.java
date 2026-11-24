@@ -16,8 +16,8 @@ public class LaunchSpeedTuner extends OpMode {
     //public double lowVelocity = 900;
     double curTargetVelocity = targetVelocity;
 
-    //double F = 0;
-    //double P = 0;
+    double F = 16;
+    double P = 210;
 
     double[] stepSizes={1000,100,10};
 
@@ -30,8 +30,8 @@ public class LaunchSpeedTuner extends OpMode {
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-       // PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
-        //flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfCoefficients);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,pidfCoefficients);
 
     }
 
