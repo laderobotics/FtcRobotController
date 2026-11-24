@@ -21,7 +21,7 @@ public class litzymotorpractice extends OpMode {
             litzymotor2.setMotorSpeed(gamepad1.left_trigger);
         }
         else {
-            litzymotor2.setMotorSpeed(0.0); // stops the motor
+            litzymotor2.setMotorSpeed(0.0 ); // stops the motor
 
         }
         telemetry.addData("Motor Revs", litzymotor2.getMotorRevs());
